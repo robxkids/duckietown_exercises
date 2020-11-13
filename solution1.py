@@ -15,12 +15,11 @@ class DontCrushDuckieTaskSolution(TaskSolution):
         img = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
 
         # add here some image processing
-
+        print("random text")
         condition = True
         while condition:
-            obs, reward, done, info = env.step([1, 0])
+            speed = 0.2
             img = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
-
             img2 = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             bnw = cv2.inRange(img2, (0, 150, 170), (0, 220, 255))
             contours, ret = cv2.findContours(bnw, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
@@ -28,11 +27,10 @@ class DontCrushDuckieTaskSolution(TaskSolution):
                 contours = sorted(contours, key=cv2.contourArea, reverse=True)
                 contours = contours[0]
                 (x, y, w, h) = cv2.boundingRect(contours)
-                print(w, h)
-                if h > 150:
-                    condition = False
-                    break
 
-            # add here some image processing
-            condition = True
+                if h > 130:
+                    speed = 0
+
+
+            obs, reward, done, info = env.step([speed, 0])
             env.render()
